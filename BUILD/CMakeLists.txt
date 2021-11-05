@@ -1,0 +1,6 @@
+cmake_minimum_required(VERSION 3.4...3.18)
+project(pydyns)
+add_subdirectory(pybind11)
+include_directories(include/fparser)
+include_directories(include/eigen-3.3.9)
+pybind11_add_module(dyns SecondOrderODESolver.cpp include/fparser/fparser.cc include/fparser/fpoptimizer.cc)
