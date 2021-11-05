@@ -1,4 +1,0 @@
-C:/Code/DynamicSystems/Numerical-solution-ODE-of-the-2nd-order/BUILD/CMakeFiles/dyns.dir
-C:/Code/DynamicSystems/Numerical-solution-ODE-of-the-2nd-order/BUILD/CMakeFiles/ALL_BUILD.dir
-C:/Code/DynamicSystems/Numerical-solution-ODE-of-the-2nd-order/BUILD/CMakeFiles/ZERO_CHECK.dir
-C:/Code/DynamicSystems/Numerical-solution-ODE-of-the-2nd-order/BUILD/pybind11/CMakeFiles/ALL_BUILD.dir
