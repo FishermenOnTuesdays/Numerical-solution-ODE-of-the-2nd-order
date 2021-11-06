@@ -29,6 +29,9 @@ public:
 	//Return condition number of matrix A (the description is in the comments to the private variable A)
 	double GetConditionNumber();
 
+	//Return matrix for solving ODE - A (the description is in the comments to the private variable A)
+	Eigen::MatrixXd GetMatrixA();
+
 private:
 	//Filling the matrix A (the description is in the comments to the private variable A)
 	void FillMatrixForSolving();

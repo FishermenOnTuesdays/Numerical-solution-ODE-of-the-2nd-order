@@ -40,6 +40,11 @@ double SecondOrderODESolver::GetConditionNumber()
 	return svd.singularValues()(0) / svd.singularValues()(svd.singularValues().size() - 1);
 }
 
+Eigen::MatrixXd SecondOrderODESolver::GetMatrixA()
+{
+	return this->A;
+}
+
 void SecondOrderODESolver::FillMatrixForSolving()
 {
 	//Filling 1st row of the matrix
