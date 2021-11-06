@@ -113,6 +113,7 @@ PYBIND11_MODULE(dyns, module_handle) {
 		module_handle, "SecondOrderODESolver"
 		).def(py::init<std::vector<std::pair<std::string, std::string>>, Eigen::Matrix<double, 2, 3>, std::pair<double, double>, size_t>())
 		.def("GetConditionNumber", &SecondOrderODESolver::GetConditionNumber, "Return condition number of matrix for solving ODE")
-		.def("GetSolution", &SecondOrderODESolver::GetSolution, "Return Y - approximation of the solution on a grid");
+		.def("GetSolution", &SecondOrderODESolver::GetSolution, "Return Y - approximation of the solution on a grid")
+		.def("GetMatrixForSolution", &SecondOrderODESolver::GetMatrixA, "Return matrix for solving ODE");
 }
 #endif // !_DEBUG
