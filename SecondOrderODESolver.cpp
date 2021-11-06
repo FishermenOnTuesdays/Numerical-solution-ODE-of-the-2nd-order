@@ -2,18 +2,18 @@
 
 SecondOrderODESolver::SecondOrderODESolver(std::vector<std::pair<std::string, std::string>> functions_string_pairs, Eigen::Matrix<double, 2, 3> boundary_coefficients, std::pair<double, double> border, size_t N)
 {
-	// converting types
-	std::vector<FunctionParser> functions_coefficients;
-	for (std::pair<std::string, std::string> fsp : functions_string_pairs) {
-		FunctionParser f;
-		f.Parse(fsp.first, fsp.second);
-		functions_coefficients.push_back(f);
+	for (auto function_pair : functions_string_pairs) {
+		FunctionParser parser;
+		if (parser.Parse(function_pair.first, function_pair.second) >= 0)
+			throw std::exception(parser.ErrorMsg());
+		this->functions_coefficients.push_back(parser);
 	}
 	if (border.first > border.second)
 		throw std::exception("Invalid \'border\' values");
 	if (N < 3)
 		throw std::exception("Invalid \'N\' value");
-	if (std::abs(boundary_coefficients.block<2,2>(0,0).determinant()) < 0.001)
+	if (std::abs(boundary_coefficients(0, 0) * boundary_coefficients(0, 1)) < 0.001
+		&& std::abs(boundary_coefficients(1, 0) * boundary_coefficients(1, 1)) < 0.001)
 		throw std::exception("Invalid \'boundary_coefficients\' values");
 	this->A = Eigen::MatrixXd::Zero(N, N);
 	this->Y = Eigen::VectorXd::Zero(N);
@@ -22,7 +22,6 @@ SecondOrderODESolver::SecondOrderODESolver(std::vector<std::pair<std::string, st
 	this->b = border.second;
 	this->h = (this->b - this->a) / (N - 1);
 	this->boundary_coefficients = std::move(boundary_coefficients);
-	this->functions_coefficients = std::move(functions_coefficients);
 	this->FillMatrixForSolving();
 	this->FillVectorPHI();
 	this->is_solved = false;
@@ -53,8 +52,14 @@ void SecondOrderODESolver::FillMatrixForSolving()
 	{
 		double x = i * this->h + this->a;
 		this->A(i, i - 1) = 1 / std::pow(this->h, 2) - this->functions_coefficients[0].Eval(&x) / (2 * this->h);
+		if (this->functions_coefficients[0].EvalError())
+			throw std::exception("Error \'Eval\' call");
 		this->A(i, i) = this->functions_coefficients[1].Eval(&x) - 2 / std::pow(this->h, 2);
+		if (this->functions_coefficients[1].EvalError())
+			throw std::exception("Error \'Eval\' call");
 		this->A(i, i + 1) = 1 / std::pow(this->h, 2) + this->functions_coefficients[0].Eval(&x) / (2 * this->h);
+		if (this->functions_coefficients[0].EvalError())
+			throw std::exception("Error \'Eval\' call");
 	}
 
 	//Filling last row of the matrix
@@ -73,6 +78,8 @@ void SecondOrderODESolver::FillVectorPHI()
 	{
 		double x = i * this->h + this->a;
 		this->PHI(i) = this->functions_coefficients[2].Eval(&x);
+		if (this->functions_coefficients[2].EvalError())
+			throw std::exception("Error \'Eval\' call");
 	}
 
 	//Set last element of the vector
@@ -86,8 +93,9 @@ void SecondOrderODESolver::Solve()
 	this->is_solved = true;
 }
 
-///*
-// needed for export to Python
+
+#ifndef _DEBUG
+// Needed for export to Python
 #include <pybind11/pybind11.h>
 #include <pybind11/eigen.h>
 #include <pybind11/stl.h>
@@ -102,4 +110,4 @@ PYBIND11_MODULE(dyns, module_handle) {
 		.def("GetConditionNumber", &SecondOrderODESolver::GetConditionNumber, "Return condition number of matrix for solving ODE")
 		.def("GetSolution", &SecondOrderODESolver::GetSolution, "Return Y - approximation of the solution on a grid");
 }
-//*/
+#endif // !_DEBUG

@@ -15,7 +15,7 @@ public:
 	//α1·y'(a) + β1·y(a) = γ1
 	//α2·y'(b) + β2·y(b) = γ2 ,
 	//where x∈[a,b]
-	//functions_coefficients is {p(x), q(x), φ(x)}
+	//functions_string_pairs is {{"p(x)", "x"}, {"q(x)", "x"}, {"φ(x)", "x"}}
 	//boundary_coefficients is:
 	//α1 β1 γ1
 	//α2 β2 γ2
