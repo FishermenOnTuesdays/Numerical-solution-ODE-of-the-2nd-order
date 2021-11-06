@@ -12,8 +12,8 @@ SecondOrderODESolver::SecondOrderODESolver(std::vector<std::pair<std::string, st
 		throw std::exception("Invalid \'border\' values");
 	if (N < 3)
 		throw std::exception("Invalid \'N\' value");
-	if (std::abs(boundary_coefficients(0, 0) * boundary_coefficients(0, 1)) < 0.001
-		&& std::abs(boundary_coefficients(1, 0) * boundary_coefficients(1, 1)) < 0.001)
+	if (std::abs(boundary_coefficients(0, 0) * boundary_coefficients(0, 1)) > 0.001
+		&& std::abs(boundary_coefficients(1, 0) * boundary_coefficients(1, 1)) > 0.001)
 		throw std::exception("Invalid \'boundary_coefficients\' values");
 	this->A = Eigen::MatrixXd::Zero(N, N);
 	this->Y = Eigen::VectorXd::Zero(N);
